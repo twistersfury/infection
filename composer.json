@@ -27,7 +27,7 @@
     },
     "require": {
         "php": "^7.0",
-        "nikic/php-parser": "^3.0",
+        "nikic/php-parser": "v4.0.0alpha1",
         "symfony/console": "^3.2",
         "symfony/process": "^3.2",
         "symfony/finder": "^3.2",

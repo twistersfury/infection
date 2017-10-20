@@ -12,6 +12,7 @@ use Infection\Mutator\FunctionSignatureMutator;
 use Infection\Mutator\InterfaceParentTrait;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 
 class PublicVisibility extends FunctionSignatureMutator
@@ -58,10 +59,10 @@ class PublicVisibility extends FunctionSignatureMutator
         return $node->isPublic();
     }
 
-    private function isBlacklistedFunction(string $name): bool
+    private function isBlacklistedFunction(Identifier $identifier): bool
     {
         return in_array(
-            $name,
+            $identifier->name,
             [
                 '__construct',
                 '__invoke',

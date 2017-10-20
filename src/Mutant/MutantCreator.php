@@ -14,8 +14,9 @@ use Infection\TestFramework\Coverage\CodeCoverageData;
 use Infection\Visitor\MutatorVisitor;
 use PhpParser\Lexer;
 use PhpParser\NodeTraverser;
-use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
+use PhpParser\NodeVisitor;
+use PhpParser\Parser;
 
 class MutantCreator
 {
@@ -37,33 +38,39 @@ class MutantCreator
 
     public function create(Mutation $mutation, CodeCoverageData $codeCoverageData): Mutant
     {
-        $lexer = new Lexer([
+        $lexer = new Lexer\Emulative([
             'usedAttributes' => [
-                'comments', 'startLine', 'endLine', 'startTokenPos', 'endTokenPos', 'startFilePos', 'endFilePos',
+                'comments',
+                'startLine', 'endLine',
+                'startTokenPos', 'endTokenPos',
+                'startFilePos', 'endFilePos',
             ],
         ]);
-        $prettyPrinter = new Standard();
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7, $lexer);
+        $parser = new Parser\Php7($lexer);
 
         $traverser = new NodeTraverser();
-        $visitor = new MutatorVisitor($mutation);
+        $traverser->addVisitor(new NodeVisitor\CloningVisitor());
 
-        $traverser->addVisitor($visitor);
+        $mutatorVisitor = new MutatorVisitor($mutation);
+        $traverser->addVisitor($mutatorVisitor);
 
-        $originalStatements = $parser->parse(file_get_contents($mutation->getOriginalFilePath()));
+        $printer = new Standard();
 
-        $originalPrettyPrintedFile = $prettyPrinter->prettyPrintFile($originalStatements);
+        $originalCode = file_get_contents($mutation->getOriginalFilePath());
+        $oldStmts = $parser->parse($originalCode);
+        $oldTokens = $lexer->getTokens();
 
-        $mutatedStatements = $traverser->traverse($originalStatements);
+        $newStmts = $traverser->traverse($oldStmts);
 
-        $mutatedCode = $prettyPrinter->prettyPrintFile($mutatedStatements);
         $mutatedFilePath = sprintf('%s/mutant.%s.infection.php', $this->tempDir, $mutation->getHash());
 
-        $diff = $this->differ->diff($originalPrettyPrintedFile, $mutatedCode);
+        $isCoveredByTest = $this->isCoveredByTest($mutation, $codeCoverageData);
+
+        $mutatedCode = $printer->printFormatPreserving($newStmts, $oldStmts, $oldTokens);
 
         file_put_contents($mutatedFilePath, $mutatedCode);
 
-        $isCoveredByTest = $this->isCoveredByTest($mutation, $codeCoverageData);
+        $diff = $this->differ->diff($originalCode, $mutatedCode);
 
         return new Mutant(
             $mutatedFilePath,
