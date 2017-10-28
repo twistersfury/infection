@@ -11,12 +11,18 @@ namespace Infection\Visitor;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-class WrappedFunctionInfoCollectorVisitor extends NodeVisitorAbstract
+class ReflectionVisitor extends NodeVisitorAbstract
 {
+    const REFLECTION_CLASS_KEY = 'reflectionClass';
     const IS_INSIDE_FUNCTION_KEY = 'isInsideFunction';
     const FUNCTION_SCOPE_KEY = 'functionScope';
 
     private $scopeStack = [];
+
+    /**
+     * @var \ReflectionClass
+     */
+    private $classReflection;
 
     public function beforeTraverse(array $nodes)
     {
@@ -25,6 +31,12 @@ class WrappedFunctionInfoCollectorVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
+        if ($node instanceof Node\Stmt\ClassLike) {
+            $reflectionClass = new \ReflectionClass($node->fullyQualifiedClassName->toString());
+
+            $this->classReflection = $reflectionClass;
+        }
+
         $isInsideFunction = $this->isInsideFunction($node);
 
         if ($isInsideFunction) {
@@ -33,8 +45,10 @@ class WrappedFunctionInfoCollectorVisitor extends NodeVisitorAbstract
 
         if ($this->isFunctionLikeNode($node)) {
             $this->scopeStack[] = $node;
+            $node->setAttribute(self::REFLECTION_CLASS_KEY, $this->classReflection);
         } elseif ($isInsideFunction) {
             $node->setAttribute(self::FUNCTION_SCOPE_KEY, $this->scopeStack[count($this->scopeStack) - 1]);
+            $node->setAttribute(self::REFLECTION_CLASS_KEY, $this->classReflection);
         }
     }
 
