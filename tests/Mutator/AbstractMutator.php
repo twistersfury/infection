@@ -57,6 +57,5 @@ abstract class AbstractMutator extends TestCase
         $mutatedNodes = $traverser->traverse($nodes);
 
         return $prettyPrinter->prettyPrintFile($mutatedNodes);
-
     }
 }
