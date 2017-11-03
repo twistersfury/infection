@@ -24,7 +24,7 @@ class FullyQualifiedClassNameVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        // TODO test it, and with anonym class
+        // TODO remove tokenStart? filestart attributes?
 
         if ($node instanceof Stmt\Namespace_) {
             $this->namespace = $node->name;

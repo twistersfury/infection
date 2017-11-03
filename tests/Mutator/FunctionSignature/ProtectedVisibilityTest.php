@@ -82,6 +82,60 @@ CODE;
         $this->assertSame($expectedMutatedCode, $mutatedCode);
     }
 
+    public function test_it_does_not_mutate_if_parent_abstract_has_same_protected_method()
+    {
+        $code = file_get_contents(__DIR__ . '/../../Files/Autoloaded/ProtectedVisibility/pv-same-method-abstract.php');
+
+        $mutatedCode = $this->mutate($code);
+
+        $expectedMutatedCode = <<<'CODE'
+<?php
+
+namespace ProtectedSameAbstract;
+
+abstract class SameAbstract
+{
+    protected abstract function foo();
+}
+class Child extends SameAbstract
+{
+    protected function foo()
+    {
+    }
+}
+CODE;
+
+        $this->assertSame($expectedMutatedCode, $mutatedCode);
+    }
+
+    public function test_it_does_not_mutate_if_parent_class_has_same_protected_method()
+    {
+        $code = file_get_contents(__DIR__ . '/../../Files/Autoloaded/ProtectedVisibility/pv-same-method-parent.php');
+
+        $mutatedCode = $this->mutate($code);
+
+        $expectedMutatedCode = <<<'CODE'
+<?php
+
+namespace ProtectedSameParent;
+
+class SameParent
+{
+    private function foo()
+    {
+    }
+}
+class Child extends SameParent
+{
+    protected function foo()
+    {
+    }
+}
+CODE;
+
+        $this->assertSame($expectedMutatedCode, $mutatedCode);
+    }
+
     public function test_it_does_not_change_final_flag()
     {
         $code = file_get_contents(__DIR__ . '/../../Files/Autoloaded/ProtectedVisibility/pv-final.php');
