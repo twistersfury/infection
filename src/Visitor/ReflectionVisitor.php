@@ -27,6 +27,7 @@ class ReflectionVisitor extends NodeVisitorAbstract
     public function beforeTraverse(array $nodes)
     {
         $this->scopeStack = [];
+        $this->classReflection = null;
     }
 
     public function enterNode(Node $node)
