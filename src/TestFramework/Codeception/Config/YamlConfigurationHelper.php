@@ -69,11 +69,11 @@ class YamlConfigurationHelper
         }
 
         $config['paths'] = [
-            'tests' => ($config['paths']['tests'] ?? $pathToProjectDir . 'tests'),
-            'output' => $this->tempDir . '/' . $outputDir,
-            'data' => ($config['paths']['data'] ?? $pathToProjectDir . 'tests/_data'),
+            'tests'   => ($config['paths']['tests'] ?? $pathToProjectDir . 'tests'),
+            'output'  => $this->tempDir . '/' . $outputDir,
+            'data'    => ($config['paths']['data'] ?? $pathToProjectDir . 'tests/_data'),
             'support' => ($config['paths']['support'] ?? $pathToProjectDir . 'tests/_support'),
-            'envs' => ($config['paths']['envs'] ?? $pathToProjectDir . 'tests/_envs'),
+            'envs'    => ($config['paths']['envs'] ?? $pathToProjectDir . 'tests/_envs'),
         ];
 
         $config['coverage'] = [
