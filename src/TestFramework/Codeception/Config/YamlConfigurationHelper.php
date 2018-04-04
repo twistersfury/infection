@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2018 Tobias Stadler
+ * Copyright © 2017-2018 Maks Rafalko
  *
  * License: https://opensource.org/licenses/BSD-3-Clause New BSD License
  */
@@ -69,11 +69,11 @@ class YamlConfigurationHelper
         }
 
         $config['paths'] = [
-            'tests'   => ($config['paths']['tests'] ?? $pathToProjectDir . 'tests'),
-            'output'  => $this->tempDir . '/' . $outputDir,
-            'data'    => ($config['paths']['data'] ?? $pathToProjectDir . 'tests/_data'),
+            'tests' => ($config['paths']['tests'] ?? $pathToProjectDir . 'tests'),
+            'output' => $this->tempDir . '/' . $outputDir,
+            'data' => ($config['paths']['data'] ?? $pathToProjectDir . 'tests/_data'),
             'support' => ($config['paths']['support'] ?? $pathToProjectDir . 'tests/_support'),
-            'envs'    => ($config['paths']['envs'] ?? $pathToProjectDir . 'tests/_envs'),
+            'envs' => ($config['paths']['envs'] ?? $pathToProjectDir . 'tests/_envs'),
         ];
 
         $config['coverage'] = [
@@ -90,14 +90,13 @@ class YamlConfigurationHelper
         return Yaml::dump($config);
     }
 
-
     private function updatePaths(array $config, string $projectPath): array
     {
         $returnConfig = [];
-        foreach($config as $key => $value) {
+        foreach ($config as $key => $value) {
             if (is_array($value)) {
                 $value = $this->updatePaths($value, $projectPath);
-            } else if (is_string($value) && file_exists($projectPath . $value)) {
+            } elseif (is_string($value) && file_exists($projectPath . $value)) {
                 $value = $projectPath . $value;
             }
 

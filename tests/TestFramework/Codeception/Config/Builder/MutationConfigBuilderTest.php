@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2018 Tobias Stadler
+ * Copyright © 2017-2018 Maks Rafalko
  *
  * License: https://opensource.org/licenses/BSD-3-Clause New BSD License
  */
@@ -77,7 +77,7 @@ class MutationConfigBuilderTest extends MockeryTestCase
         $this->assertSame(realpath($this->projectDir . '/tests/_data'), realpath($config['paths']['data']));
         $this->assertSame(realpath($this->projectDir . '/tests/_support'), realpath($config['paths']['support']));
         $this->assertSame(realpath($this->projectDir . '/tests/_envs'), realpath($config['paths']['envs']));
-        $this->assertSame(false, $config['coverage']['enabled']);
+        $this->assertFalse($config['coverage']['enabled']);
         $this->assertSame([], $config['coverage']['include']);
         $this->assertSame([], $config['coverage']['exclude']);
     }

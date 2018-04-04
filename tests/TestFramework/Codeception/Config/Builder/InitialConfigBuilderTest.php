@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2018 Tobias Stadler
+ * Copyright © 2017-2018 Maks Rafalko
  *
  * License: https://opensource.org/licenses/BSD-3-Clause New BSD License
  */
@@ -64,8 +64,8 @@ class InitialConfigBuilderTest extends TestCase
         $this->assertSame(realpath($this->projectDir . '/tests/_data'), realpath($config['paths']['data']));
         $this->assertSame(realpath($this->projectDir . '/tests/_support'), realpath($config['paths']['support']));
         $this->assertSame(realpath($this->projectDir . '/tests/_envs'), realpath($config['paths']['envs']));
-        $this->assertSame(true, $config['coverage']['enabled']);
-        $this->assertSame([self::rp($this->projectDir . '/src/*')], array_map(InitialConfigBuilderTest::class . '::rp', $config['coverage']['include']));
+        $this->assertTrue($config['coverage']['enabled']);
+        $this->assertSame([self::rp($this->projectDir . '/src/*')], array_map(self::class . '::rp', $config['coverage']['include']));
         $this->assertSame([], $config['coverage']['exclude']);
     }
 

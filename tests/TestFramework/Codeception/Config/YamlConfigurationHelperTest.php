@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2018 Tobias Stadler
+ * Copyright © 2017-2018 Maks Rafalko
  *
  * License: https://opensource.org/licenses/BSD-3-Clause New BSD License
  */
@@ -94,8 +94,8 @@ YAML;
 
         $config = Yaml::parse($configurationHelper->getTransformedConfig());
 
-        $this->assertSame(true, $config['coverage']['enabled']);
-        $this->assertSame([self::rp($this->projectDir . '/src/*')], array_map(YamlConfigurationHelperTest::class . '::rp', $config['coverage']['include']));
+        $this->assertTrue($config['coverage']['enabled']);
+        $this->assertSame([self::rp($this->projectDir . '/src/*')], array_map(self::class . '::rp', $config['coverage']['include']));
         $this->assertSame([], $config['coverage']['exclude']);
     }
 
@@ -113,7 +113,7 @@ YAML;
 
         $config = Yaml::parse($configurationHelper->getTransformedConfig('.', false));
 
-        $this->assertSame(false, $config['coverage']['enabled']);
+        $this->assertFalse($config['coverage']['enabled']);
         $this->assertSame([], $config['coverage']['include']);
         $this->assertSame([], $config['coverage']['exclude']);
     }
@@ -132,8 +132,8 @@ YAML;
 
         $config = Yaml::parse($configurationHelper->getTransformedConfig('.', true));
 
-        $this->assertSame(true, $config['coverage']['enabled']);
-        $this->assertSame([self::rp($this->projectDir . '/src/*')], array_map(YamlConfigurationHelperTest::class . '::rp', $config['coverage']['include']));
+        $this->assertTrue($config['coverage']['enabled']);
+        $this->assertSame([self::rp($this->projectDir . '/src/*')], array_map(self::class . '::rp', $config['coverage']['include']));
         $this->assertSame([], $config['coverage']['exclude']);
     }
 
