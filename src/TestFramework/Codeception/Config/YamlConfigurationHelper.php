@@ -53,15 +53,7 @@ class YamlConfigurationHelper
 
     public function getTransformedConfig(string $outputDir = '.', bool $coverageEnabled = true): string
     {
-        $projectDirParts = explode(DIRECTORY_SEPARATOR, realpath($this->projectDir));
-        $tempDirParts = explode(DIRECTORY_SEPARATOR, realpath($this->tempDir));
-
-        while (count($projectDirParts) > 0 && count($tempDirParts) > 0 && strcmp($projectDirParts[0], $tempDirParts[0]) === 0) {
-            array_shift($projectDirParts);
-            array_shift($tempDirParts);
-        }
-
-        $pathToProjectDir = str_repeat('../', count($tempDirParts)) . implode('/', $projectDirParts) . '/';
+        $pathToProjectDir = rtrim($this->projectDir, '/') . '/';
 
         $config = Yaml::parse($this->originalConfig);
         if (!$config !== null) {
