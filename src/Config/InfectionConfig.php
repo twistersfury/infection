@@ -11,6 +11,9 @@ namespace Infection\Config;
 
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @internal
+ */
 class InfectionConfig
 {
     const PROCESS_TIMEOUT_SECONDS = 10;
@@ -145,5 +148,15 @@ class InfectionConfig
     public function getMutatorsConfiguration(): array
     {
         return (array) ($this->config->mutators ?? []);
+    }
+
+    public function getBootstrap(): string
+    {
+        return $this->config->bootstrap ?? '';
+    }
+
+    public function getTestFramework(): string
+    {
+        return $this->config->testFramework ?? 'phpunit';
     }
 }

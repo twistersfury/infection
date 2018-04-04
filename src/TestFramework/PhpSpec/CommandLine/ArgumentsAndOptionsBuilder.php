@@ -12,7 +12,7 @@ namespace Infection\TestFramework\PhpSpec\CommandLine;
 use Infection\Mutant\Mutant;
 use Infection\TestFramework\CommandLineArgumentsAndOptionsBuilder;
 
-class ArgumentsAndOptionsBuilder implements CommandLineArgumentsAndOptionsBuilder
+final class ArgumentsAndOptionsBuilder implements CommandLineArgumentsAndOptionsBuilder
 {
     public function build(string $configPath, string $extraOptions, Mutant $mutant = null): string
     {

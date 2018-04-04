@@ -17,6 +17,7 @@ use Infection\Console\OutputFormatter\DotFormatter;
 use Infection\Console\OutputFormatter\OutputFormatter;
 use Infection\Console\OutputFormatter\ProgressFormatter;
 use Infection\EventDispatcher\EventDispatcher;
+use Infection\Finder\Exception\LocatorException;
 use Infection\Mutant\Exception\MsiCalculationException;
 use Infection\Mutant\Generator\MutationsGenerator;
 use Infection\Mutant\MetricsCalculator;
@@ -45,7 +46,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
-class InfectionCommand extends BaseCommand
+final class InfectionCommand extends BaseCommand
 {
     const CI_FLAG_ERROR = 'The minimum required %s percentage should be %s%%, but actual is %s%%. Improve your tests!';
 
@@ -73,7 +74,7 @@ class InfectionCommand extends BaseCommand
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Name of the Test framework to use (' . implode(', ', TestFrameworkTypes::TYPES) . ')',
-                'phpunit'
+                null
             )
             ->addOption(
                 'test-framework-options',
@@ -171,14 +172,25 @@ class InfectionCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
-        $testFrameworkKey = $input->getOption('test-framework');
+        $config = $container->get('infection.config');
+
+        $bootstrap = $config->getBootstrap();
+        if ($bootstrap) {
+            if (!file_exists($bootstrap)) {
+                throw LocatorException::fileOrDirectoryDoesNotExist($bootstrap);
+            }
+
+            require_once $bootstrap;
+        }
+
+        $testFrameworkKey = $input->getOption('test-framework') ?: $config->getTestFramework();
         $adapter = $container->get('test.framework.factory')->create($testFrameworkKey, $this->skipCoverage);
 
         $metricsCalculator = new MetricsCalculator();
 
         $this->registerSubscribers($metricsCalculator, $adapter);
 
-        $processBuilder = new ProcessBuilder($adapter, $container->get('infection.config')->getProcessTimeout());
+        $processBuilder = new ProcessBuilder($adapter, $config->getProcessTimeout());
         $testFrameworkOptions = $this->getTestFrameworkExtraOptions($testFrameworkKey);
 
         $initialTestsRunner = new InitialTestsRunner($processBuilder, $this->eventDispatcher);

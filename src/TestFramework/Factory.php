@@ -16,6 +16,7 @@ use Infection\TestFramework\Codeception\CommandLine\ArgumentsAndOptionsBuilder a
 use Infection\TestFramework\Codeception\Config\Builder\InitialConfigBuilder as CodeceptionInitialConfigBuilder;
 use Infection\TestFramework\Codeception\Config\Builder\MutationConfigBuilder as CodeceptionMutationConfigBuilder;
 use Infection\TestFramework\Config\TestFrameworkConfigLocator;
+use Infection\TestFramework\Config\TestFrameworkConfigLocatorInterface;
 use Infection\TestFramework\PhpSpec\Adapter\PhpSpecAdapter;
 use Infection\TestFramework\PhpSpec\CommandLine\ArgumentsAndOptionsBuilder as PhpSpecArgumentsAndOptionsBuilder;
 use Infection\TestFramework\PhpSpec\Config\Builder\InitialConfigBuilder as PhpSpecInitialConfigBuilder;
@@ -67,7 +68,7 @@ final class Factory
     public function __construct(
         string $tmpDir,
         string $projectDir,
-        TestFrameworkConfigLocator $configLocator,
+        TestFrameworkConfigLocatorInterface $configLocator,
         XmlConfigurationHelper $xmlConfigurationHelper,
         string $jUnitFilePath,
         InfectionConfig $infectionConfig,
