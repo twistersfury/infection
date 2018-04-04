@@ -94,7 +94,7 @@ abstract class AbstractTestFrameworkAdapter
         string $extraOptions,
         bool $includePhpArgs = true,
         array $phpExtraOptions = [],
-        Mutant $mutant = null
+        MutantInterface $mutant = null
     ): string {
         return sprintf(
             '%s %s',
