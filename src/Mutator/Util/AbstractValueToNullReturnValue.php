@@ -22,6 +22,10 @@ abstract class AbstractValueToNullReturnValue extends Mutator
             return true;
         }
 
+        if (!$functionScope) {
+            return true;
+        }
+
         $returnType = $functionScope->getReturnType();
         if ($returnType instanceof Node\Identifier) {
             $returnType = $returnType->name;

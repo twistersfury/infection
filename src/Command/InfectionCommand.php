@@ -74,7 +74,7 @@ final class InfectionCommand extends BaseCommand
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Name of the Test framework to use (' . implode(', ', TestFrameworkTypes::TYPES) . ')',
-                null
+                ''
             )
             ->addOption(
                 'test-framework-options',
