@@ -59,7 +59,7 @@ class YamlConfigurationHelper
     {
         $pathToProjectDir = rtrim($this->projectDir, '/') . '/';
 
-        $this->output->writeln('Project Path: ' . $pathToProjectDir, OutputInterface::VERBOSITY_DEBUG);
+        $this->output->writeln('Project Path: ' . $pathToProjectDir);
 
         $config = Yaml::parse($this->originalConfig);
         if (!$config !== null) {
@@ -95,7 +95,7 @@ class YamlConfigurationHelper
             if (is_array($value)) {
                 $value = $this->updatePaths($value, $projectPath);
             } elseif (is_string($value)) {
-                $this->output->writeln($value, OutputInterface::VERBOSITY_DEBUG);
+                $this->output->writeln($value);
                 if (file_exists($projectPath . $value)) {
                     $value = $projectPath . $value;
                 }
