@@ -27,6 +27,7 @@ use Infection\TestFramework\PhpUnit\Config\Builder\InitialConfigBuilder;
 use Infection\TestFramework\PhpUnit\Config\Builder\MutationConfigBuilder;
 use Infection\TestFramework\PhpUnit\Config\XmlConfigurationHelper;
 use Infection\Utils\VersionParser;
+use Symfony\Component\Console\Output\OutputInterface;
 
 final class Factory
 {
@@ -83,7 +84,7 @@ final class Factory
         $this->versionParser = $versionParser;
     }
 
-    public function create(string $adapterName, bool $skipCoverage): AbstractTestFrameworkAdapter
+    public function create(string $adapterName, bool $skipCoverage, OutputInterface $output): AbstractTestFrameworkAdapter
     {
         if ($adapterName === TestFrameworkTypes::PHPUNIT) {
             $phpUnitConfigPath = $this->configLocator->locate(TestFrameworkTypes::PHPUNIT);
@@ -123,7 +124,7 @@ final class Factory
 
             return new CodeceptionAdapter(
                 new TestFrameworkFinder(CodeceptionAdapter::EXECUTABLE),
-                new CodeceptionInitialConfigBuilder($this->tmpDir, $this->projectDir, $codeceptionConfigContent, $this->infectionConfig->getSourceDirs()),
+                new CodeceptionInitialConfigBuilder($this->tmpDir, $this->projectDir, $codeceptionConfigContent, $this->infectionConfig->getSourceDirs(), $output),
                 new CodeceptionMutationConfigBuilder($this->tmpDir, $this->projectDir, $codeceptionConfigContent),
                 new CodeceptionArgumentsAndOptionsBuilder($this->tmpDir),
                 $this->versionParser

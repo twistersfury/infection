@@ -184,7 +184,7 @@ final class InfectionCommand extends BaseCommand
         }
 
         $testFrameworkKey = $input->getOption('test-framework') ?: $config->getTestFramework();
-        $adapter = $container->get('test.framework.factory')->create($testFrameworkKey, $this->skipCoverage);
+        $adapter = $container->get('test.framework.factory')->create($testFrameworkKey, $this->skipCoverage, $output);
 
         $metricsCalculator = new MetricsCalculator();
 

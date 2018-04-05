@@ -11,6 +11,7 @@ namespace Infection\TestFramework\Codeception\Config\Builder;
 
 use Infection\TestFramework\Codeception\Config\YamlConfigurationHelper;
 use Infection\TestFramework\Config\InitialConfigBuilder as ConfigBuilder;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class InitialConfigBuilder implements ConfigBuilder
 {
@@ -19,9 +20,9 @@ class InitialConfigBuilder implements ConfigBuilder
      */
     private $configurationHelper;
 
-    public function __construct(string $tempDir, string $projectDir, string $originalConfig, array $srcDirs)
+    public function __construct(string $tempDir, string $projectDir, string $originalConfig, array $srcDirs, OutputInterface $output)
     {
-        $this->configurationHelper = new YamlConfigurationHelper($tempDir, $projectDir, $originalConfig, $srcDirs);
+        $this->configurationHelper = new YamlConfigurationHelper($tempDir, $projectDir, $originalConfig, $srcDirs, $output);
     }
 
     public function build(): string

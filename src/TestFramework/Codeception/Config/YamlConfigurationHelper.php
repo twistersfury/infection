@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Infection\TestFramework\Codeception\Config;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlConfigurationHelper
@@ -33,7 +34,10 @@ class YamlConfigurationHelper
      */
     private $srcDirs;
 
-    public function __construct(string $tempDir, string $projectDir, string $originalConfig, array $srcDirs = [])
+    /** @var OutputInterface */
+    private $output;
+
+    public function __construct(string $tempDir, string $projectDir, string $originalConfig, array $srcDirs = [], OutputInterface $output)
     {
         $this->tempDir = substr($tempDir, -1) === DIRECTORY_SEPARATOR ? substr($tempDir, 0, -1) : $tempDir;
         $this->originalConfig = $originalConfig;
@@ -54,6 +58,8 @@ class YamlConfigurationHelper
     public function getTransformedConfig(string $outputDir = '.', bool $coverageEnabled = true): string
     {
         $pathToProjectDir = rtrim($this->projectDir, '/') . '/';
+
+        $this->output->writeln('Project Path: ' . $pathToProjectDir, OutputInterface::VERBOSITY_DEBUG);
 
         $config = Yaml::parse($this->originalConfig);
         if (!$config !== null) {
@@ -88,8 +94,11 @@ class YamlConfigurationHelper
         foreach ($config as $key => $value) {
             if (is_array($value)) {
                 $value = $this->updatePaths($value, $projectPath);
-            } elseif (is_string($value) && file_exists($projectPath . $value)) {
-                $value = $projectPath . $value;
+            } elseif (is_string($value)) {
+                $this->output->writeln($value, OutputInterface::VERBOSITY_DEBUG);
+                if (file_exists($projectPath . $value)) {
+                    $value = $projectPath . $value;
+                }
             }
 
             $returnConfig[$key] = $value;
